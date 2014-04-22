@@ -1,5 +1,5 @@
 # Author: Rene Adler <rene.adler@electric-force.net>
-# URL: http://code.google.com/p/sickbeard/
+# URL: https://github.com/adlerre/Sick-Beard
 #
 # This file is part of Sick Beard.
 #
@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Sick Beard.  If not, see <http://www.gnu.org/licenses/>.
 
+import email.utils
 import datetime
 import time
 import gzip
@@ -190,7 +191,7 @@ class NZBIndexProvider(generic.NZBProvider):
 
             if type(data) == type({}) and data['errorCode']:
                 if retry < self.max_retries:
-                    logger.log(u"Retry " + str(retry+1) + " from " + str(self.max_retries) + "...", logger.WARNING)
+                    logger.log(u"Retry " + str(retry + 1) + " from " + str(self.max_retries) + "...", logger.WARNING)
                     retry += 1
                 else:
                     logger.log(u"Max retries reached!", logger.ERROR)
@@ -219,28 +220,41 @@ class NZBIndexProvider(generic.NZBProvider):
         return results
 
 
-    def findPropers(self, date=None):
+    def findPropers(self, search_date=None):
 
-        results = []
+        search_terms = ['.proper.', '.repack.']
 
-        for curResult in self._doSearch("(PROPER,REPACK)"):
+        cache_results = self.cache.listPropers(search_date)
+        results = [classes.Proper(x['name'], x['url'], datetime.datetime.fromtimestamp(x['time'])) for x in cache_results]
 
-            (title, url) = self._get_title_and_url(curResult)
+        for term in search_terms:
+            for item in self._doSearch({'q': term}, max_age=4):
 
-            pubDate_node = curResult.getElementsByTagName('pubDate')[0]
-            pubDate = helpers.get_xml_text(pubDate_node)
-            dateStr = re.search('(\w{3}, \d{1,2} \w{3} \d{4} \d\d:\d\d:\d\d) [\+\-]\d{4}', pubDate).group(1)
-            if not dateStr:
-                logger.log(u"Unable to figure out the date for entry " + title + ", skipping it")
-                continue
-            else:
-                resultDate = datetime.datetime.strptime(dateStr, "%a, %d %b %Y %H:%M:%S")
+                (title, url) = self._get_title_and_url(item)
 
-            if date == None or resultDate > date:
-                results.append(classes.Proper(title, url, resultDate))
+                description_node = item.find('pubDate')
+                description_text = helpers.get_xml_text(description_node)
+
+                try:
+                    # we could probably do dateStr = descriptionStr but we want date in this format
+                    date_text = re.search('(\w{3}, \d{1,2} \w{3} \d{4} \d\d:\d\d:\d\d) [\+\-]\d{4}', description_text).group(1)
+                except:
+                    date_text = None
+
+                if not date_text:
+                    logger.log(u"Unable to figure out the date for entry " + title + ", skipping it")
+                    continue
+                else:
+
+                    result_date = email.utils.parsedate(date_text)
+                    if result_date:
+                        result_date = datetime.datetime(*result_date[0:6])
+
+                if not search_date or result_date > search_date:
+                    search_result = classes.Proper(title, url, result_date)
+                    results.append(search_result)
 
         return results
-
 
 class NZBIndexCache(tvcache.TVCache):
 
