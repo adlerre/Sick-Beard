@@ -331,7 +331,7 @@ def initialize(consoleLogging=True):
                 NEWZNAB_DATA, NZBS, NZBS_UID, NZBS_HASH, EZRSS, HDBITS, HDBITS_USERNAME, HDBITS_PASSKEY, TVTORRENTS, TVTORRENTS_DIGEST, TVTORRENTS_HASH, BTN, BTN_API_KEY, TORRENTLEECH, TORRENTLEECH_KEY, \
                 TORRENT_DIR, USENET_RETENTION, SOCKET_TIMEOUT, \
                 SEARCH_FREQUENCY, DEFAULT_SEARCH_FREQUENCY, BACKLOG_SEARCH_FREQUENCY, \
-                QUALITY_DEFAULT, FLATTEN_FOLDERS_DEFAULT, STATUS_DEFAULT, \
+                QUALITY_DEFAULT, FLATTEN_FOLDERS_DEFAULT, IGNORE_WORDS_DEFAULT, REQUIRE_WORDS_DEFAULT, STATUS_DEFAULT, \
                 GROWL_NOTIFY_ONSNATCH, GROWL_NOTIFY_ONDOWNLOAD, TWITTER_NOTIFY_ONSNATCH, TWITTER_NOTIFY_ONDOWNLOAD, \
                 USE_GROWL, GROWL_HOST, GROWL_PASSWORD, USE_PROWL, PROWL_NOTIFY_ONSNATCH, PROWL_NOTIFY_ONDOWNLOAD, PROWL_API, PROWL_PRIORITY, PROG_DIR, \
                 USE_PYTIVO, PYTIVO_NOTIFY_ONSNATCH, PYTIVO_NOTIFY_ONDOWNLOAD, PYTIVO_UPDATE_LIBRARY, PYTIVO_HOST, PYTIVO_SHARE_NAME, PYTIVO_TIVO_NAME, \
@@ -972,6 +972,8 @@ def save_config():
     new_config['General']['quality_default'] = int(QUALITY_DEFAULT)
     new_config['General']['status_default'] = int(STATUS_DEFAULT)
     new_config['General']['flatten_folders_default'] = int(FLATTEN_FOLDERS_DEFAULT)
+    new_config['General']['ignore_words_default'] = IGNORE_WORDS_DEFAULT
+    new_config['General']['require_words_default'] = REQUIRE_WORDS_DEFAULT
     new_config['General']['provider_order'] = ' '.join(PROVIDER_ORDER)
     new_config['General']['version_notify'] = int(VERSION_NOTIFY)
     new_config['General']['naming_pattern'] = NAMING_PATTERN
