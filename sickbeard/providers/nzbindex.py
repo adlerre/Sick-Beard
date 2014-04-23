@@ -283,8 +283,8 @@ class NZBIndexCache(tvcache.TVCache):
         
         tvcache.TVCache.__init__(self, provider)
 
-        # only poll NZBIndex every 25 minutes max
-        self.minTime = 25
+        # only poll NZBIndex every 15 minutes max
+        self.minTime = 15
 
     def _getRSSData(self):
         
@@ -316,8 +316,8 @@ class NZBIndexCache(tvcache.TVCache):
                 return []
 
             if type(data) == type({}) and data['errorCode']:
-                if retry < self.max_retries:
-                    logger.log(u"Retry " + str(retry + 1) + " from " + str(self.max_retries) + "...", logger.WARNING)
+                if retry < self.provider.max_retries:
+                    logger.log(u"Retry " + str(retry + 1) + " from " + str(self.provider.max_retries) + "...", logger.WARNING)
                     retry += 1
                 else:
                     logger.log(u"Max retries reached!", logger.ERROR)
