@@ -479,11 +479,14 @@ ul#rootDirStaticList li {
 #tabs  label span.component-title,
 .stepDiv label span.component-title {
   float: left;
-  width: 165px;
+  width: 215px;
   padding-left: 6px;
   margin-right: 10px;
   font-size: 1.1em;
   font-weight: bold;
+}
+#tabs  label span.component-title {
+	width: 265px;
 }
 #tabs label span.component-desc,
 .stepDiv label span.component-desc {

@@ -133,6 +133,8 @@ METADATA_MEDE8ER = None
 QUALITY_DEFAULT = None
 STATUS_DEFAULT = None
 FLATTEN_FOLDERS_DEFAULT = None
+IGNORE_WORDS_DEFAULT = None
+REQUIRE_WORDS_DEFAULT = None
 PROVIDER_ORDER = []
 
 NAMING_MULTI_EP = None
@@ -424,6 +426,8 @@ def initialize(consoleLogging=True):
         STATUS_DEFAULT = check_setting_int(CFG, 'General', 'status_default', SKIPPED)
         VERSION_NOTIFY = check_setting_int(CFG, 'General', 'version_notify', 1)
         FLATTEN_FOLDERS_DEFAULT = bool(check_setting_int(CFG, 'General', 'flatten_folders_default', 0))
+        IGNORE_WORDS_DEFAULT = check_setting_str(CFG, 'General', 'ignore_words_default', '')
+        REQUIRE_WORDS_DEFAULT = check_setting_str(CFG, 'General', 'require_words_default', '')
 
         PROVIDER_ORDER = check_setting_str(CFG, 'General', 'provider_order', '').split()
 
