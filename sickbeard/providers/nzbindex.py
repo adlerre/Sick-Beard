@@ -52,6 +52,7 @@ from sickbeard import tvcache
 class NZBIndexProvider(generic.NZBProvider):
 
     def __init__(self):
+        
         generic.NZBProvider.__init__(self, "NZBIndex")
 
         self.cache = NZBIndexCache(self)
@@ -63,11 +64,13 @@ class NZBIndexProvider(generic.NZBProvider):
         self.supportsBacklog = True
 
     def imageName(self):
+        
         if ek.ek(os.path.isfile, ek.ek(os.path.join, sickbeard.PROG_DIR, 'data', 'images', 'providers', self.getID() + '.png')):
             return self.getID() + '.png'
         return 'nzbindex.png'
     
     def isEnabled(self):
+        
         return sickbeard.NZBINDEX
     
     def getURL(self, url, post_data=None, headers=[]):
@@ -124,8 +127,25 @@ class NZBIndexProvider(generic.NZBProvider):
     
         return result
 
-    def _get_season_search_strings(self, show, season=None):
+    def _append_search_options(self, search_string="", ignore_words=None, require_words=None):
+        """
+        Add search options like on advanced search.
+        Currently not implement, because not working. But a good exercise. ;)
+        """
+        ignore_words = ignore_words.split(',') if ignore_words else []
+        require_words = require_words.split(',') if require_words else []
+        
+        if len(ignore_words) + len(require_words) + len(search_string.split(' ')) <= 20:
+            search_string += (' -' if len(ignore_words) > 0 else '') + ' -'.join(ignore_words)
+            search_string += (' ' if len(require_words) > 0 else '') + '|'.join(require_words)
+        else:
+            search_string += (' ' if len(require_words) > 0 else '') + '|'.join(require_words)
+            search_string += (' -' if len(ignore_words) > 0 else '') + ' -'.join(ignore_words[:(20-len(require_words) + len(search_string.split(' ')))])
+            
+        return search_string
 
+    def _get_season_search_strings(self, show, season=None):
+        
         if not show:
             return [{}]
         
@@ -150,7 +170,7 @@ class NZBIndexProvider(generic.NZBProvider):
         to_return = [];
         
         search_strings = show_name_helpers.makeSceneSearchString(ep_obj);
-
+        
         if ep_obj.show.rls_require_words:
             for word in ep_obj.show.rls_require_words.split(','):
                 for search_string in search_strings:
@@ -161,6 +181,7 @@ class NZBIndexProvider(generic.NZBProvider):
             return [x for x in search_strings]
    
     def _doSearch(self, search_string, show=None, max_age=0):
+        
         params = {"q":search_string,
                   "max": 100,
                   "hidespam": 1,
@@ -221,7 +242,7 @@ class NZBIndexProvider(generic.NZBProvider):
 
 
     def findPropers(self, search_date=None):
-
+        
         search_terms = ['.proper.', '.repack.']
 
         cache_results = self.cache.listPropers(search_date)
@@ -259,14 +280,14 @@ class NZBIndexProvider(generic.NZBProvider):
 class NZBIndexCache(tvcache.TVCache):
 
     def __init__(self, provider):
-
+        
         tvcache.TVCache.__init__(self, provider)
 
         # only poll NZBIndex every 25 minutes max
         self.minTime = 25
 
-
     def _getRSSData(self):
+        
         # get all records since the last timestamp
         url = self.provider.url + self.provider.rss
 
@@ -282,10 +303,28 @@ class NZBIndexCache(tvcache.TVCache):
         url += urllib.urlencode(urlArgs)
 
         logger.log(u"NZBIndex cache update URL: " + url, logger.DEBUG)
+        
+        retry = 0
+        while True:
+            logger.log(u"Sleeping 3 seconds to respect NZBIndex's rules")
+            time.sleep(3)
+            
+            data = self.provider.getURL(url)
+        
+            if not data:
+                logger.log(u"No data returned from " + url, logger.ERROR)
+                return []
 
-        data = self.provider.getURL(url)
+            if type(data) == type({}) and data['errorCode']:
+                if retry < self.max_retries:
+                    logger.log(u"Retry " + str(retry + 1) + " from " + str(self.max_retries) + "...", logger.WARNING)
+                    retry += 1
+                else:
+                    logger.log(u"Max retries reached!", logger.ERROR)
+                    return []
+            else:
+                break
 
         return data
-
 
 provider = NZBIndexProvider()
