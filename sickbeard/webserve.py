@@ -1049,6 +1049,10 @@ class ConfigProviders:
                 sickbeard.TORRENTLEECH = curEnabled
             elif curProvider == 'btn':
                 sickbeard.BTN = curEnabled
+            elif curProvider == 'nzbindex':
+                sickbeard.NZBINDEX = curEnabled
+            elif curProvider == 'binsearch':
+                sickbeard.BINSEARCH = curEnabled
             elif curProvider in newznabProviderDict:
                 newznabProviderDict[curProvider].enabled = bool(curEnabled)
             else:

@@ -34,7 +34,7 @@ from threading import Lock
 # apparently py2exe won't build these unless they're imported somewhere
 from sickbeard import providers, metadata
 
-from providers import ezrss, tvtorrents, torrentleech, btn, newznab, nzbindex, womble, omgwtfnzbs, hdbits
+from providers import ezrss, tvtorrents, torrentleech, btn, newznab, nzbindex, binsearch, womble, omgwtfnzbs, hdbits
 from sickbeard.config import CheckSection, check_setting_int, check_setting_str, ConfigMigrator
 
 from sickbeard import searchCurrent, searchBacklog, showUpdater, versionChecker, properFinder, autoPostProcesser
@@ -199,6 +199,8 @@ OMGWTFNZBS_APIKEY = None
 
 NZBINDEX = False
 
+BINSEARCH = False
+
 SAB_USERNAME = None
 SAB_PASSWORD = None
 SAB_APIKEY = None
@@ -341,7 +343,7 @@ def initialize(consoleLogging=True):
                 showQueueScheduler, searchQueueScheduler, ROOT_DIRS, CACHE_DIR, ACTUAL_CACHE_DIR, TVDB_API_PARMS, \
                 NAMING_PATTERN, NAMING_MULTI_EP, NAMING_FORCE_FOLDERS, NAMING_ABD_PATTERN, NAMING_CUSTOM_ABD, \
                 RENAME_EPISODES, properFinderScheduler, PROVIDER_ORDER, autoPostProcesserScheduler, \
-                WOMBLE, OMGWTFNZBS, OMGWTFNZBS_USERNAME, OMGWTFNZBS_APIKEY, NZBINDEX, providerList, newznabProviderList, \
+                WOMBLE, OMGWTFNZBS, OMGWTFNZBS_USERNAME, OMGWTFNZBS_APIKEY, NZBINDEX, BINSEARCH, providerList, newznabProviderList, \
                 EXTRA_SCRIPTS, USE_TWITTER, TWITTER_USERNAME, TWITTER_PASSWORD, TWITTER_PREFIX, \
                 USE_BOXCAR, BOXCAR_USERNAME, BOXCAR_PASSWORD, BOXCAR_NOTIFY_ONDOWNLOAD, BOXCAR_NOTIFY_ONSNATCH, \
                 USE_PUSHOVER, PUSHOVER_USERKEY, PUSHOVER_NOTIFY_ONDOWNLOAD, PUSHOVER_NOTIFY_ONSNATCH, \
@@ -522,6 +524,9 @@ def initialize(consoleLogging=True):
 
         CheckSection(CFG, 'NZBIndex')
         NZBINDEX = bool(check_setting_int(CFG, 'NZBIndex', 'nzbindex', 1))
+        
+        CheckSection(CFG, 'BinSearch')
+        BINSEARCH = bool(check_setting_int(CFG, 'BinSearch', 'binsearch', 1))
 
         CheckSection(CFG, 'SABnzbd')
         SAB_USERNAME = check_setting_str(CFG, 'SABnzbd', 'sab_username', '')
@@ -1045,6 +1050,9 @@ def save_config():
     
     new_config['NZBIndex'] = {}
     new_config['NZBIndex']['nzbindex'] = int(NZBINDEX)
+    
+    new_config['BinSearch'] = {}
+    new_config['BinSearch']['binsearch'] = int(BINSEARCH)
 
     new_config['SABnzbd'] = {}
     new_config['SABnzbd']['sab_username'] = SAB_USERNAME
