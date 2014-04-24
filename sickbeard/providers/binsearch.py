@@ -55,7 +55,7 @@ class BinSearchProvider(generic.NZBProvider):
             'search': 'https://www.binsearch.info/index.php?%s',
         }
         
-        self.supportsBacklog = false
+        self.supportsBacklog = False
 
     def imageName(self):
         
