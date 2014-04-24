@@ -185,7 +185,7 @@ class NZBIndexProvider(generic.NZBProvider):
         params = {"q":search_string,
                   "max": 100,
                   "hidespam": 1,
-                  "minsize":100,
+                  "minsize":350,
                   "nzblink":1,
                   "complete": 1,
                   "sort": "agedesc",
@@ -295,7 +295,7 @@ class NZBIndexCache(tvcache.TVCache):
                    'max': 500,
                    'sort': 'agedesc',
                    'hidespam': 1,
-                   'minsize':100,
+                   'minsize':350,
                    'nzblink':1,
                    'complete': 1,
                    "age": sickbeard.USENET_RETENTION}
