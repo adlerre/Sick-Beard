@@ -9,7 +9,9 @@ $(document).ready(function () {
         $.get(sbRoot + '/config/general/saveAddShowDefaults', {defaultStatus: $('#statusSelect').val(),
                                                              anyQualities: anyQualArray.join(','),
                                                              bestQualities: bestQualArray.join(','),
-                                                             defaultFlattenFolders: $('#flatten_folders').prop('checked')});
+                                                             defaultFlattenFolders: $('#flatten_folders').prop('checked'),
+                                                             defaultIgnoreWords: $('#ignore_words').val(),
+                                                             defaultRequireWords: $('#require_words').val()});
         $(this).attr('disabled', true);
         $.pnotify({
             title: 'Saved Defaults',
@@ -18,7 +20,7 @@ $(document).ready(function () {
         });
     });
 
-    $('#statusSelect, #qualityPreset, #flatten_folders, #anyQualities, #bestQualities').change(function () {
+    $('#statusSelect, #qualityPreset, #flatten_folders, #anyQualities, #bestQualities, #ignore_words, #require_words').change(function () {
         $('#saveDefaultsButton').attr('disabled', false);
     });
 

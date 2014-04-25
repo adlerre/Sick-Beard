@@ -22,7 +22,9 @@ __all__ = ['ezrss',
            'torrentleech',
            'womble',
            'btn',
-           'omgwtfnzbs'
+           'omgwtfnzbs',
+           'nzbindex',
+           'binsearch'
            ]
 
 import sickbeard

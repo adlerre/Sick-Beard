@@ -30,8 +30,7 @@ import datetime
 from name_parser.parser import NameParser, InvalidNameException
 
 resultFilters = ["sub(pack|s|bed)", "nlsub(bed|s)?", "swesub(bed)?",
-                 "(dir|sample|sub|nfo)fix", "sample", "(dvd)?extras",
-                 "dub(bed)?"]
+                 "(dir|sample|sub|nfo)fix", "sample", "(dvd)?extras"]
 
 
 def filterBadReleases(name):
@@ -195,15 +194,27 @@ def isGoodResult(name, show, log=True):
     for curName in set(showNames):
         escaped_name = re.sub('\\\\[\\s.-]', '\W+', re.escape(curName))
         if show.startyear:
-            escaped_name += "(?:\W+" + str(show.startyear) + ")?"
-        curRegex = '^' + escaped_name + '\W+(?:(?:S\d[\dE._ -])|(?:\d\d?x)|(?:\d{4}\W\d\d\W\d\d)|(?:(?:part|pt)[\._ -]?(\d|[ivx]))|Season\W+\d+\W+|E\d+\W+)'
+            escaped_name += "(?:\W+"+str(show.startyear)+")?"
+        
+        #use regex and sub to replace common spam
+        releasetrim = ['^<?.* \d{9,} ?-? ','^\.zZz\. "?','^(.*) >','^\[\d{5,}.*\[ ','^\.: ']
+        realname = name
+        for regex in releasetrim:
+            name = re.sub(regex, "", name)
+        
+        if realname != name:
+            logger.log(u"REGEX - Releasename: "+realname, logger.DEBUG)
+            logger.log(u"REGEX - Cleaned Releasename: "+name, logger.DEBUG)
+            
+        curRegex = escaped_name + '(?:[\w\W._ -]+)(?:(?:S\d[\dE._ -])|(?:\d\d?x)|(?:\d{4}\W\d\d\W\d\d)|(?:(?:part|pt)[\._ -]?(\d|[ivx]))|(Season|Staffel)\W+\d+\W+|E\d+\W+)'
+        
         if log:
-            logger.log(u"Checking if show " + name + " matches " + curRegex, logger.DEBUG)
+            logger.log(u"Checking if show "+name+" matches " + curRegex, logger.DEBUG)
 
         match = re.search(curRegex, name, re.I)
 
         if match:
-            logger.log(u"Matched " + curRegex + " to " + name, logger.DEBUG)
+            logger.log(u"Matched "+curRegex+" to "+name, logger.DEBUG)
             return True
 
     if log:

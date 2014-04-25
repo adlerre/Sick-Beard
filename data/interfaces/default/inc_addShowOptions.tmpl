@@ -25,6 +25,30 @@
         #set global $anyQualities = $qualities[0]
         #set global $bestQualities = $qualities[1]
         #include $os.path.join($sickbeard.PROG_DIR, "data/interfaces/default/inc_qualityChooser.tmpl")
+        
+        <div class="field-pair alt">
+            <label for="ignore_words" class="nocheck clearfix">
+                <span class="component-title">
+                    <input type="text" name="ignore_words" value="$sickbeard.IGNORE_WORDS_DEFAULT" id="ignore_words" size="30" />
+                </span>
+                <span class="component-desc">
+                    Ignored Words (this show)<br>
+                    Separate words with a comma, e.g. "word1,word2,word3"
+                </span>
+            </label>
+        </div>
+        
+        <div class="field-pair">
+            <label for="require_words" class="nocheck clearfix">
+                <span class="component-title">
+                    <input type="text" name="require_words" value="$sickbeard.REQUIRE_WORDS_DEFAULT" id="require_words" size="30" />
+                </span>
+                <span class="component-desc">
+                    Required Words (this show)<br>
+                    Separate words with a comma, e.g. "word1,word2,word3"
+                </span>
+            </label>
+        </div>
 
         <div class="field-pair alt">
             <label for="saveDefaultsButton" class="nocheck clearfix">
